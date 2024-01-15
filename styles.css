@@ -1,0 +1,20 @@
+/* Add custom styles for any modifications or additions made by your extension */
+
+/* Example: Styling for any added elements or modified areas */
+.your-custom-class {
+    /* Custom styles here */
+}
+
+/* You can also override YouTube's existing styles if needed */
+/* Example: Make the titles more prominent */
+#video-title {
+    font-weight: bold;
+    color: #333;
+    /* Adjust the color as needed */
+}
+
+/* Hide elements (alternative method to JavaScript) */
+/* This is an example and may not be necessary if JavaScript is handling the display */
+.hide-element {
+    display: none !important;
+}
