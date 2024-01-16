@@ -21,7 +21,7 @@ let previousUrl = location.href;
 new MutationObserver(() => {
   const url = location.href;
   if (url !== previousUrl) {
-    lastUrl = url;
+    previousUrl = url;
     checkForHomeURL();
   }
 }).observe(document, { subtree: true, childList: true });

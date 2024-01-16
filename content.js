@@ -7,7 +7,9 @@ function toggleElementVisibility(elementId, hide, callee) {
   console.log('Toggling visibility for:', elementId, 'Hide:', hide, 'callee', callee);
   let element = document.getElementById(elementId);
   if (element) {
-    element.style.display = hide ? 'none' : '';
+    //element.style.display = hide ? 'none' : '';
+    //delete element
+    element.remove();
   }
 }
 
@@ -53,12 +55,12 @@ chrome.runtime.onMessage.addListener(
 );
 
 
-// Function to handle style changes
-function handleStyleChange(mutation) {
-  const oldDisplayValue = mutation.oldValue; // the previous display value
-  const newDisplayValue = mutation.target.style.display; // the new display value
 
-  if (oldDisplayValue !== newDisplayValue) {
-    console.log(`Display changed from "${oldDisplayValue}" to "${newDisplayValue}"`);
+let previousUrl_2 = location.href;
+new MutationObserver(() => {
+  const url = location.href;
+  if (url !== previousUrl_2) {
+    previousUrl_2 = url;
+    applySettings('MutationObserver');
   }
-}
+}).observe(document, { subtree: true, childList: true });
