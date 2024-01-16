@@ -1,25 +1,17 @@
 document.addEventListener('DOMContentLoaded', function () {
-  var recommendationsCheckbox = document.getElementById('toggleRecommendations');
-  var secondaryCheckbox = document.getElementById('toggleSecondary');
+  let secondaryCheckbox = document.getElementById('toggleSecondary');
+  let toggleHomeFeedCheckbox = document.getElementById('toggleHomeFeed');
 
 
-  // Load the state of the checkboxes
+  // Load checkbox state from storage
   chrome.storage.sync.get('settings', function (data) {
     if (data.settings) {
-      recommendationsCheckbox.checked = !!data.settings.hideRecommendations;
       secondaryCheckbox.checked = !!data.settings.hideSecondary;
+      toggleHomeFeedCheckbox.checked = !!data.settings.toggleHomeFeed;
     }
   });
 
-  // Save the state of the checkboxes
-  recommendationsCheckbox.addEventListener('change', function () {
-    chrome.storage.sync.get('settings', function (data) {
-      var settings = data.settings || {};
-      settings.hideRecommendations = recommendationsCheckbox.checked;
-      chrome.storage.sync.set({ 'settings': settings });
-    });
-  });
-
+  // Update hide recommendations state to storage
   secondaryCheckbox.addEventListener('change', function () {
     chrome.storage.sync.get('settings', function (data) {
       var settings = data.settings || {};
@@ -27,4 +19,14 @@ document.addEventListener('DOMContentLoaded', function () {
       chrome.storage.sync.set({ 'settings': settings });
     });
   });
+
+  // Update toggle home feed state to storage
+  toggleHomeFeedCheckbox.addEventListener('change', function () {
+    chrome.storage.sync.get('settings', function (data) {
+      var settings = data.settings || {};
+      settings.toggleHomeFeed = toggleHomeFeedCheckbox.checked;
+      chrome.storage.sync.set({ 'settings': settings });
+    });
+  });
+
 });

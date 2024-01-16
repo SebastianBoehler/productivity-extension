@@ -5,23 +5,12 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
     console.log(oldValue, newValue)
   }
 
-  if (changes.settings?.newValue.hideRecommendations !== undefined) {
+  if (changes.settings?.newValue) {
     chrome.tabs.query({ url: "*://*.youtube.com/*" }, (tabs) => {
       tabs.forEach(tab => {
         chrome.tabs.sendMessage(tab.id, {
-          action: "toggleRecommendations",
-          hide: changes.settings.newValue.hideRecommendations
-        });
-      });
-    });
-  }
-
-  if (changes.settings?.newValue.hideSecondary !== undefined) {
-    chrome.tabs.query({ url: "*://*.youtube.com/*" }, (tabs) => {
-      tabs.forEach(tab => {
-        chrome.tabs.sendMessage(tab.id, {
-          action: "toggleSecondary",
-          hide: changes.settings.newValue.hideSecondary
+          action: "settingsChanged",
+          settings: changes.settings.newValue
         });
       });
     });
