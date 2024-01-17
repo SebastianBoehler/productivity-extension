@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Productivity Extension",
+  "name": "FocusFeed: Streamlined Social Browsing",
   "version": "1.0",
   "permissions": [
     "storage",
