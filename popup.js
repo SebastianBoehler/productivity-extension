@@ -1,21 +1,21 @@
 document.addEventListener('DOMContentLoaded', function () {
-  let secondaryCheckbox = document.getElementById('toggleSecondary');
+  let recommendationsCheckbox = document.getElementById('toggleRecommendations');
   let toggleHomeFeedCheckbox = document.getElementById('toggleHomeFeed');
 
 
   // Load checkbox state from storage
   chrome.storage.sync.get('settings', function (data) {
     if (data.settings) {
-      secondaryCheckbox.checked = !!data.settings.hideSecondary;
+      recommendationsCheckbox.checked = !!data.settings.hideSecondary;
       toggleHomeFeedCheckbox.checked = !!data.settings.toggleHomeFeed;
     }
   });
 
   // Update hide recommendations state to storage
-  secondaryCheckbox.addEventListener('change', function () {
+  recommendationsCheckbox.addEventListener('change', function () {
     chrome.storage.sync.get('settings', function (data) {
       var settings = data.settings || {};
-      settings.hideSecondary = secondaryCheckbox.checked;
+      settings.toggleRecommendations = recommendationsCheckbox.checked;
       chrome.storage.sync.set({ 'settings': settings });
     });
   });

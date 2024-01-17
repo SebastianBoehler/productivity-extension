@@ -1,33 +1,49 @@
+let settings = undefined
 
-const sleep = (milliseconds) => {
-  return new Promise(resolve => setTimeout(resolve, milliseconds))
+async function loadSettings() {
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.get('settings', (data) => {
+      if (data.settings) {
+        settings = data.settings;
+        resolve(data.settings);
+      } else {
+        reject();
+      }
+    });
+  })
 }
 
-function toggleElementVisibility(elementId, hide, callee) {
-  console.log('Toggling visibility for:', elementId, 'Hide:', hide, 'callee', callee);
-  let element = document.getElementById(elementId);
-  if (element) {
-    //element.style.display = hide ? 'none' : '';
-    //delete element
-    element.remove();
+async function applySettings(settings) {
+  if (!settings) {
+    settings = await loadSettings();
   }
-}
+  //go over features and apply them
+  //console.log('Applying settings:', settings);
+  const { toggleHomeFeed, toggleRecommendations } = settings;
+  if (toggleRecommendations) {
+    //remove recommendations feed on the right
+    const secondaryElement = document.getElementById('secondary');
+    if (secondaryElement) {
+      secondaryElement.remove();
+    }
 
-async function applySettings(callee = 'applySettings') {
-  chrome.storage.sync.get('settings', (data) => {
-    if (data.settings) {
-      if (data.settings.hideSecondary) {
-        toggleElementVisibility('secondary', true, callee);
+    const parentElement = document.getElementById('sections');
+    if (parentElement && parentElement.children.length >= 3) {
+      const thirdChild = parentElement.children[2];
+      if (thirdChild) thirdChild.setAttribute('style', 'display: none !important');
+    }
+  }
+
+  if (toggleHomeFeed) {
+    let sectionsElement = document.getElementById("sections");
+    if (sectionsElement) {
+      let itemsElement = sectionsElement.querySelector("#items");
+      if (itemsElement && itemsElement.firstChild) {
+        itemsElement.firstChild.style.display = 'none';
       }
     }
-  });
+  }
 }
-
-
-window.onload = function () {
-  //page has fully loaded including all frames, objects and images
-  periodicallyCheckElements();
-};
 
 // Repeatedly check if the elements are available in the DOM and apply settings.
 // This is necessary because YouTube loads content dynamically.
@@ -35,7 +51,7 @@ function periodicallyCheckElements() {
   // Check if the elements are available in the DOM
   const intervalId = setInterval(() => {
     if (document.getElementById('secondary')) {
-      applySettings('periodicallyCheckElements');
+      applySettings();
       clearInterval(intervalId);
     }
   }, 50);
@@ -48,19 +64,14 @@ chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
     console.log('Received message:', request);
     if (request.action === 'settingsChanged') {
-      const { settings } = request;
-      toggleElementVisibility('secondary', settings.hideSecondary, 'settingsChanged');
+      settings = request.settings;
+      applySettings(settings);
     }
   }
 );
 
 
 
-let previousUrl_2 = location.href;
 new MutationObserver(() => {
-  const url = location.href;
-  if (url !== previousUrl_2) {
-    previousUrl_2 = url;
-    applySettings('MutationObserver');
-  }
+  applySettings(settings);
 }).observe(document, { subtree: true, childList: true });
