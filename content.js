@@ -19,50 +19,54 @@ async function applySettings(settings) {
   }
   //go over features and apply them
   //console.log('Applying settings:', settings);
-  const { toggleHomeFeed, toggleRecommendations, toggleComments, toggleShorts } = settings;
-  if (toggleRecommendations) {
-    //remove recommendations feed on the right
-    const secondaryElement = document.getElementById('secondary');
-    if (secondaryElement) {
-      secondaryElement.remove();
-    }
+  const { toggleHomeFeed, toggleRecommendations, toggleComments, toggleShorts, youtube } = settings;
 
-    const parentElement = document.querySelector('.ytd-guide-renderer#sections')
-    if (parentElement && parentElement.children.length >= 3) {
-      const thirdChild = parentElement.children[2];
-      if (thirdChild) thirdChild.setAttribute('style', 'display: none !important');
-    }
-  }
+  //all youtube features
+  if (youtube) {
+    if (toggleRecommendations) {
+      //remove recommendations feed on the right
+      const secondaryElement = document.getElementById('secondary');
+      if (secondaryElement) {
+        secondaryElement.remove();
+      }
 
-  if (toggleHomeFeed) {
-    let sectionsElement = document.querySelector('.ytd-guide-renderer#sections')
-    if (sectionsElement) {
-      let itemsElement = sectionsElement.querySelector("#items");
-      if (itemsElement && itemsElement.firstChild) {
-        itemsElement.firstChild.style.display = 'none';
+      const parentElement = document.querySelector('.ytd-guide-renderer#sections')
+      if (parentElement && parentElement.children.length >= 3) {
+        const thirdChild = parentElement.children[2];
+        if (thirdChild) thirdChild.setAttribute('style', 'display: none !important');
       }
     }
-  }
 
-  if (toggleComments) {
-    let commentsElement = document.querySelector('[section-identifier="comment-item-section"]');
-    if (commentsElement) {
-      commentsElement.style.display = 'none';
-    }
-  }
-
-  if (toggleShorts) {
-    let shortsElementinFeed = document.querySelector('[is-shorts]')
-    if (shortsElementinFeed) {
-      shortsElementinFeed.style.display = 'none';
+    if (toggleHomeFeed) {
+      let sectionsElement = document.querySelector('.ytd-guide-renderer#sections')
+      if (sectionsElement) {
+        let itemsElement = sectionsElement.querySelector("#items");
+        if (itemsElement && itemsElement.firstChild) {
+          itemsElement.firstChild.style.display = 'none';
+        }
+      }
     }
 
-    let sectionsElement = document.querySelector('.ytd-guide-renderer#sections')
-    if (sectionsElement) {
-      let itemsElement = sectionsElement.querySelector("#items");
-      if (itemsElement && itemsElement.children.length >= 2) {
-        const secondChild = itemsElement.children[1];
-        if (secondChild) secondChild.style.display = 'none';
+    if (toggleComments) {
+      let commentsElement = document.querySelector('[section-identifier="comment-item-section"]');
+      if (commentsElement) {
+        commentsElement.style.display = 'none';
+      }
+    }
+
+    if (toggleShorts) {
+      let shortsElementinFeed = document.querySelector('[is-shorts]')
+      if (shortsElementinFeed) {
+        shortsElementinFeed.style.display = 'none';
+      }
+
+      let sectionsElement = document.querySelector('.ytd-guide-renderer#sections')
+      if (sectionsElement) {
+        let itemsElement = sectionsElement.querySelector("#items");
+        if (itemsElement && itemsElement.children.length >= 2) {
+          const secondChild = itemsElement.children[1];
+          if (secondChild) secondChild.style.display = 'none';
+        }
       }
     }
   }
