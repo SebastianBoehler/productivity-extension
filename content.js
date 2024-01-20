@@ -19,7 +19,7 @@ async function applySettings(settings) {
   }
   //go over features and apply them
   //console.log('Applying settings:', settings);
-  const { toggleHomeFeed, toggleRecommendations } = settings;
+  const { toggleHomeFeed, toggleRecommendations, toggleComments, toggleShorts } = settings;
   if (toggleRecommendations) {
     //remove recommendations feed on the right
     const secondaryElement = document.getElementById('secondary');
@@ -27,7 +27,7 @@ async function applySettings(settings) {
       secondaryElement.remove();
     }
 
-    const parentElement = document.getElementById('sections');
+    const parentElement = document.querySelector('.ytd-guide-renderer#sections')
     if (parentElement && parentElement.children.length >= 3) {
       const thirdChild = parentElement.children[2];
       if (thirdChild) thirdChild.setAttribute('style', 'display: none !important');
@@ -35,11 +35,34 @@ async function applySettings(settings) {
   }
 
   if (toggleHomeFeed) {
-    let sectionsElement = document.getElementById("sections");
+    let sectionsElement = document.querySelector('.ytd-guide-renderer#sections')
     if (sectionsElement) {
       let itemsElement = sectionsElement.querySelector("#items");
       if (itemsElement && itemsElement.firstChild) {
         itemsElement.firstChild.style.display = 'none';
+      }
+    }
+  }
+
+  if (toggleComments) {
+    let commentsElement = document.querySelector('[section-identifier="comment-item-section"]');
+    if (commentsElement) {
+      commentsElement.style.display = 'none';
+    }
+  }
+
+  if (toggleShorts) {
+    let shortsElementinFeed = document.querySelector('[is-shorts]')
+    if (shortsElementinFeed) {
+      shortsElementinFeed.style.display = 'none';
+    }
+
+    let sectionsElement = document.querySelector('.ytd-guide-renderer#sections')
+    if (sectionsElement) {
+      let itemsElement = sectionsElement.querySelector("#items");
+      if (itemsElement && itemsElement.children.length >= 2) {
+        const secondChild = itemsElement.children[1];
+        if (secondChild) secondChild.style.display = 'none';
       }
     }
   }

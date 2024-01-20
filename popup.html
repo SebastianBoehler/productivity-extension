@@ -7,16 +7,31 @@
   <body>
     <h1>Productivity Extension</h1>
     <div>
-      <label>
-        <input type="checkbox" id="toggleRecommendations" /> Hide YouTube
-        Recommendations
-      </label>
-    </div>
-    <div>
-      <label>
-        <input type="checkbox" id="toggleHomeFeed" /> Replace home feed with a
-        subscription feed
-      </label>
+      <label> <input type="checkbox" id="youtube" /> YouTube </label>
+      <div style="margin-left: 20px">
+        <div>
+          <label>
+            <input type="checkbox" id="toggleRecommendations" /> Hide YouTube
+            Recommendations
+          </label>
+        </div>
+        <div>
+          <label>
+            <input type="checkbox" id="toggleComments" /> Hide YouTube Comments
+          </label>
+        </div>
+        <div>
+          <label>
+            <input type="checkbox" id="toggleShorts" /> Hide YouTube Shorts
+          </label>
+        </div>
+        <div>
+          <label>
+            <input type="checkbox" id="toggleHomeFeed" /> Replace home feed with
+            a subscription feed
+          </label>
+        </div>
+      </div>
     </div>
     <script src="popup.js"></script>
   </body>
