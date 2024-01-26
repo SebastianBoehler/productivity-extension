@@ -60,6 +60,13 @@ async function applySettings(settings) {
         shortsElementinFeed.style.display = 'none';
       }
 
+      let shortsElementInSearch = document.querySelectorAll('.style-scope ytd-reel-shelf-renderer')
+      if (shortsElementInSearch) {
+        shortsElementInSearch.forEach(element => {
+          element.style.display = 'none';
+        });
+      }
+
       let sectionsElement = document.querySelector('.ytd-guide-renderer#sections')
       if (sectionsElement) {
         let itemsElement = sectionsElement.querySelector("#items");
@@ -70,20 +77,24 @@ async function applySettings(settings) {
       }
     }
   }
-}
 
-// Repeatedly check if the elements are available in the DOM and apply settings.
-// This is necessary because YouTube loads content dynamically.
-function periodicallyCheckElements() {
-  // Check if the elements are available in the DOM
-  const intervalId = setInterval(() => {
-    if (document.getElementById('secondary')) {
-      applySettings();
-      clearInterval(intervalId);
+  const { instagram, toggleExploreFeed, toggleReelsFeed } = settings;
+
+  if (instagram) {
+    if (toggleExploreFeed) {
+      let exploreFeedElement = document.querySelector('[href="/explore/"]')
+      if (exploreFeedElement) {
+        exploreFeedElement.style.display = 'none';
+      }
     }
-  }, 50);
 
-  return intervalId;
+    if (toggleReelsFeed) {
+      let reelsFeedElement = document.querySelector('[href="/reels/"]')
+      if (reelsFeedElement) {
+        reelsFeedElement.style.display = 'none';
+      }
+    }
+  }
 }
 
 // Listen for messages from the background script

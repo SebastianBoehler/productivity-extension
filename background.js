@@ -6,7 +6,7 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
   }
 
   if (changes.settings?.newValue) {
-    chrome.tabs.query({ url: "*://*.youtube.com/*" }, (tabs) => {
+    chrome.tabs.query({ url: ["*://*.youtube.com/*", "*://*.instagram.com/*"] }, (tabs) => {
       tabs.forEach(tab => {
         chrome.tabs.sendMessage(tab.id, {
           action: "settingsChanged",
@@ -14,6 +14,7 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
         });
       });
     });
+
   }
 });
 

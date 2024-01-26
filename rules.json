@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": { "url": "https://www.youtube.com/feed/subscriptions" }
+    },
+    "condition": {
+      "regexFilter": "^(https?://)?(www\\.)?youtube\\.[a-zA-Z]{2,}(/)?$",
+      "resourceTypes": ["main_frame"]
+    }
+  },
+  {
+    "id": 2,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": { "url": "https://www.instagram.com/" }
+    },
+    "condition": {
+      "regexFilter": "^(https?://)?(www\\.)?instagram\\.com/explore(/)?$",
+      "resourceTypes": ["main_frame"]
+    }
+  }
+]
