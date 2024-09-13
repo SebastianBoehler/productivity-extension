@@ -5,8 +5,7 @@
   "permissions": [
     "storage",
     "declarativeNetRequest",
-    "declarativeNetRequestWithHostAccess",
-    "tabs"
+    "declarativeNetRequestWithHostAccess"
   ],
   "action": {
     "default_popup": "popup.html"
