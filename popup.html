@@ -1,52 +1,127 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Settings</title>
-    <link rel="stylesheet" type="text/css" href="popup.css" />
+    <!-- Include Tailwind CSS Locally -->
+    <link href="css/tailwind.min.css" rel="stylesheet" />
+    <style>
+      /* Set a minimum width and height for the popup */
+      html,
+      body {
+        min-width: 400px;
+        min-height: 300px;
+      }
+
+      /* Optional: Custom Tailwind Configuration */
+      .youtube {
+        /* color: #ff0000; */
+      }
+      .instagram {
+        /* color: #e1306c; */
+      }
+    </style>
   </head>
-  <body>
-    <h1>Productivity Extension</h1>
-    <div>
-      <label> <input type="checkbox" id="youtube" /> YouTube </label>
-      <div style="margin-left: 20px">
-        <div>
-          <label>
-            <input type="checkbox" id="toggleRecommendations" /> Hide YouTube
-            Recommendations
-          </label>
+  <body class="bg-gray-100">
+    <div class="w-full max-w-md mx-auto bg-white shadow-lg rounded-lg">
+      <h1 class="text-xl font-bold text-gray-800 p-4 border-b">
+        Productivity Extension
+      </h1>
+
+      <!-- YouTube Section -->
+      <div class="p-4">
+        <div class="flex items-center space-x-3">
+          <input
+            type="checkbox"
+            id="youtube"
+            class="h-4 w-4 border-gray-300 rounded focus:ring-youtube"
+          />
+          <label for="youtube" class="text-lg font-semibold youtube"
+            >YouTube</label
+          >
         </div>
-        <div>
-          <label>
-            <input type="checkbox" id="toggleComments" /> Hide YouTube Comments
-          </label>
+        <div class="mt-2 space-y-2">
+          <div class="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="toggleRecommendations"
+              class="h-4 w-4 border-gray-300 rounded focus:ring-youtube"
+            />
+            <label for="toggleRecommendations" class="text-sm text-gray-700"
+              >Hide YouTube Recommendations</label
+            >
+          </div>
+          <div class="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="toggleComments"
+              class="h-4 w-4 border-gray-300 rounded focus:ring-youtube"
+            />
+            <label for="toggleComments" class="text-sm text-gray-700"
+              >Hide YouTube Comments</label
+            >
+          </div>
+          <div class="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="toggleShorts"
+              class="h-4 w-4 border-gray-300 rounded focus:ring-youtube"
+            />
+            <label for="toggleShorts" class="text-sm text-gray-700"
+              >Hide YouTube Shorts</label
+            >
+          </div>
+          <div class="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="toggleHomeFeed"
+              class="h-4 w-4 border-gray-300 rounded focus:ring-youtube"
+            />
+            <label for="toggleHomeFeed" class="text-sm text-gray-700"
+              >Replace home feed with subscription feed</label
+            >
+          </div>
         </div>
-        <div>
-          <label>
-            <input type="checkbox" id="toggleShorts" /> Hide YouTube Shorts
-          </label>
+      </div>
+
+      <!-- Instagram Section -->
+      <div class="p-4">
+        <div class="flex items-center space-x-3">
+          <input
+            type="checkbox"
+            id="instagram"
+            class="h-4 w-4 border-gray-300 rounded focus:ring-instagram"
+          />
+          <label for="instagram" class="text-lg font-semibold instagram"
+            >Instagram</label
+          >
         </div>
-        <div>
-          <label>
-            <input type="checkbox" id="toggleHomeFeed" /> Replace home feed with
-            a subscription feed
-          </label>
+        <div class="mt-2 space-y-2">
+          <div class="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="toggleExploreFeed"
+              class="h-4 w-4 border-gray-300 rounded focus:ring-instagram"
+            />
+            <label for="toggleExploreFeed" class="text-sm text-gray-700"
+              >Disable explore feed</label
+            >
+          </div>
+          <div class="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="toggleReelsFeed"
+              class="h-4 w-4 border-gray-300 rounded focus:ring-instagram"
+            />
+            <label for="toggleReelsFeed" class="text-sm text-gray-700"
+              >Disable reels feed</label
+            >
+          </div>
         </div>
       </div>
     </div>
-    <div>
-      <label> <input type="checkbox" id="instagram" /> Instagram </label>
-      <div style="margin-left: 20px">
-        <div>
-          <label>
-            <input type="checkbox" id="toggleExploreFeed" /> Disable explore feed
-          </label>
-        </div>
-        <div>
-          <label>
-            <input type="checkbox" id="toggleReelsFeed" /> Disable reels feed
-          </label>
-        </div>
-    </div>
+
     <script src="popup.js"></script>
   </body>
 </html>

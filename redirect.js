@@ -1,3 +1,4 @@
+// Rules work on URL loading, this for site redirecting without reload
 function checkForHomeURL() {
   chrome.storage.sync.get('settings', function (data) {
     const settings = data.settings || {};
@@ -5,24 +6,28 @@ function checkForHomeURL() {
 
     console.log('toggleHomeFeedState', toggleHomeFeedState, settings);
 
+    // Define regular expressions for YouTube and Instagram URLs
+    const youtubeHomeRegex = /^(https?:\/\/)?(www\.)?youtube\.com\/?$/;
+    const instagramExploreRegex = /^(https?:\/\/)?(www\.)?instagram\.com\/explore\/?$/;
+    const instagramReelsRegex = /^(https?:\/\/)?(www\.)?instagram\.com\/reels\/?.*$/;  // Matches all URLs starting with /reels/
+
+
+    // YouTube Home Feed Redirect
     if (toggleHomeFeedState && settings.youtube) {
-      // Check if the URL is the home page
-      if (window.location.href === 'https://www.youtube.com/' || window.location.href === 'https://www.youtube.com') {
+      if (youtubeHomeRegex.test(window.location.href)) {
         window.location.href = 'https://www.youtube.com/feed/subscriptions';
       }
     }
 
+    // Instagram Explore Feed Redirect
     if (settings.instagram) {
-      if (settings.toggleExploreFeed) {
-        if (window.location.href === 'https://www.instagram.com/explore/' || window.location.href === 'https://www.instagram.com/explore') {
-          window.location.href = 'https://www.instagram.com/';
-        }
+      if (settings.toggleExploreFeed && instagramExploreRegex.test(window.location.href)) {
+        window.location.href = 'https://www.instagram.com/';
       }
 
-      if (settings.toggleReelsFeed) {
-        if (window.location.href === 'https://www.instagram.com/reels/' || window.location.href === 'https://www.instagram.com/reels') {
-          window.location.href = 'https://www.instagram.com/';
-        }
+      // Instagram Reels Feed Redirect
+      if (settings.toggleReelsFeed && instagramReelsRegex.test(window.location.href)) {
+        window.location.href = 'https://www.instagram.com/';
       }
     }
   });
@@ -30,7 +35,7 @@ function checkForHomeURL() {
 
 checkForHomeURL();
 
-//for page changed without reload
+// For page changed without reload
 let previousUrl = location.href;
 new MutationObserver(() => {
   const url = location.href;
@@ -39,29 +44,3 @@ new MutationObserver(() => {
     checkForHomeURL();
   }
 }).observe(document, { subtree: true, childList: true });
-
-//for page changed with reload
-//TODO: check if this actually works
-// Listen for messages from the background script
-chrome.runtime.onMessage.addListener(
-  function (request, sender, sendResponse) {
-    console.log('Received message:', request);
-    if (request.action === 'settingsChanged') {
-      console.log('settingsChanged apply dynamic rules');
-      applyDynamicRules(request.settings);
-    }
-  }
-);
-
-chrome.storage.sync.get('settings', function (data) {
-  applyDynamicRules(data.settings);
-})
-
-async function applyDynamicRules(settings) {
-  // Apply dynamic rules for YouTube
-  console.log('applyDynamicRules', settings, chrome.runtime.getManifest());
-  console.log(chrome)
-  //const oldRules = await chrome.declarativeNetRequest.getDynamicRules();
-  //console.log('oldRules', oldRules);
-}
-

@@ -1,8 +1,13 @@
 {
   "manifest_version": 3,
   "name": "FocusFeed: Streamlined Social Browsing",
-  "version": "1.0.2",
-  "permissions": ["storage"],
+  "version": "1.0.3",
+  "permissions": [
+    "storage",
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess",
+    "tabs"
+  ],
   "action": {
     "default_popup": "popup.html"
   },
@@ -15,5 +20,11 @@
   "background": {
     "service_worker": "background.js"
   },
-  "host_permissions": ["*://www.youtube.com/*", "*://www.instagram.com/*"]
+  "host_permissions": ["*://www.youtube.com/*", "*://www.instagram.com/*"],
+  "web_accessible_resources": [
+    {
+      "resources": ["rules.json"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

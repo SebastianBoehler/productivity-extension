@@ -117,4 +117,35 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
+  // Time limit input elements
+  let youtubeTimeLimitInput = document.getElementById('youtubeTimeLimit');
+  let instagramTimeLimitInput = document.getElementById('instagramTimeLimit');
+
+  // Load time limits from storage
+  chrome.storage.sync.get(['settings', 'timeLimits'], function (data) {
+    applyStates(data.settings);
+    if (data.timeLimits) {
+      youtubeTimeLimitInput.value = data.timeLimits.youtube || 0;
+      instagramTimeLimitInput.value = data.timeLimits.instagram || 0;
+    }
+  });
+
+  // Save YouTube time limit
+  youtubeTimeLimitInput.addEventListener('change', function () {
+    chrome.storage.sync.get('timeLimits', function (data) {
+      var timeLimits = data.timeLimits || {};
+      timeLimits.youtube = parseInt(youtubeTimeLimitInput.value, 10);
+      chrome.storage.sync.set({ timeLimits });
+    });
+  });
+
+  // Save Instagram time limit
+  instagramTimeLimitInput.addEventListener('change', function () {
+    chrome.storage.sync.get('timeLimits', function (data) {
+      var timeLimits = data.timeLimits || {};
+      timeLimits.instagram = parseInt(instagramTimeLimitInput.value, 10);
+      chrome.storage.sync.set({ timeLimits });
+    });
+  });
+
 });
