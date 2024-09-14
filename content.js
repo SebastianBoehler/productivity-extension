@@ -78,7 +78,7 @@ async function applySettings(settings) {
     }
   }
 
-  const { instagram, toggleExploreFeed, toggleReelsFeed } = settings;
+  const { instagram, toggleExploreFeed, toggleReelsFeed, toggleForYouPage } = settings;
 
   if (instagram) {
     if (toggleExploreFeed) {
@@ -93,6 +93,23 @@ async function applySettings(settings) {
       if (reelsFeedElement) {
         reelsFeedElement.style.display = 'none';
       }
+    }
+
+    if (toggleForYouPage) {
+      // Remove the "For You" button
+      const removeForYouButton = () => {
+        const forYouButton = document.querySelector('div[aria-label="Für dich"][role="button"]');
+        if (forYouButton) {
+          forYouButton.style.display = 'none';
+        }
+      };
+
+      // Initial removal
+      removeForYouButton();
+
+      // Set up a MutationObserver to handle dynamically loaded content
+      const observer = new MutationObserver(removeForYouButton);
+      observer.observe(document.body, { childList: true, subtree: true });
     }
   }
 }

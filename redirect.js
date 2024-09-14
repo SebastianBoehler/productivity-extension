@@ -10,7 +10,7 @@ function checkForHomeURL() {
     const youtubeHomeRegex = /^(https?:\/\/)?(www\.)?youtube\.com\/?$/;
     const instagramExploreRegex = /^(https?:\/\/)?(www\.)?instagram\.com\/explore\/?$/;
     const instagramReelsRegex = /^(https?:\/\/)?(www\.)?instagram\.com\/reels\/?.*$/;  // Matches all URLs starting with /reels/
-
+    const instagramForYouRegex = /^(https?:\/\/)?(www\.)?instagram\.com(\/|\/?variant=home)?$/;  // Updated Instagram "For You" regex
 
     // YouTube Home Feed Redirect
     if (toggleHomeFeedState && settings.youtube) {
@@ -19,15 +19,19 @@ function checkForHomeURL() {
       }
     }
 
-    // Instagram Explore Feed Redirect
+    // Instagram Redirects
     if (settings.instagram) {
       if (settings.toggleExploreFeed && instagramExploreRegex.test(window.location.href)) {
         window.location.href = 'https://www.instagram.com/';
       }
 
-      // Instagram Reels Feed Redirect
       if (settings.toggleReelsFeed && instagramReelsRegex.test(window.location.href)) {
         window.location.href = 'https://www.instagram.com/';
+      }
+
+      // Updated Instagram "For You" page redirect
+      if (settings.toggleForYouPage && instagramForYouRegex.test(window.location.href)) {
+        window.location.href = 'https://www.instagram.com/?variant=following';
       }
     }
   });

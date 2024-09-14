@@ -24,6 +24,8 @@ function applyRulesBasedOnSettings() {
     const rulesToAdd = [];
     const rulesToRemove = [];
 
+    console.log('applyRulesBasedOnSettings', settings)
+
     // YouTube Home Feed Redirect
     if (settings.toggleHomeFeed && settings.youtube) {
       rulesToAdd.push({
@@ -39,7 +41,7 @@ function applyRulesBasedOnSettings() {
         }
       });
     } else {
-      rulesToRemove.push(1); // Remove rule ID 1 if toggleHomeFeed is off
+      rulesToRemove.push(1);
     }
 
     // Instagram Explore Feed Redirect
@@ -57,7 +59,7 @@ function applyRulesBasedOnSettings() {
         }
       });
     } else {
-      rulesToRemove.push(2); // Remove rule ID 2 if toggleExploreFeed is off
+      rulesToRemove.push(2);
     }
 
     // Instagram Reels Feed Redirect
@@ -75,7 +77,26 @@ function applyRulesBasedOnSettings() {
         }
       });
     } else {
-      rulesToRemove.push(3); // Remove rule ID 3 if toggleReelsFeed is off
+      rulesToRemove.push(3);
+    }
+
+    // Updated Instagram "For You" Page Redirect
+    if (settings.toggleForYouPage && settings.instagram) {
+      console.log('settings.toggleForYouPage', settings.toggleForYouPage)
+      rulesToAdd.push({
+        "id": 4,
+        "priority": 1,
+        "action": {
+          "type": "redirect",
+          "redirect": { "url": "https://www.instagram.com/?variant=following" }
+        },
+        "condition": {
+          "regexFilter": "^(https?://)?(www\\.)?instagram\\.com(/|/\\?variant=home)?$",
+          "resourceTypes": ["main_frame"]
+        }
+      });
+    } else {
+      rulesToRemove.push(4);
     }
 
     // Update the dynamic rules
