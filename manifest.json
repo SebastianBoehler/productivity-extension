@@ -13,7 +13,8 @@
   "content_scripts": [
     {
       "matches": ["*://www.youtube.com/*", "*://www.instagram.com/*"],
-      "js": ["content.js", "redirect.js"]
+      "js": ["content.js", "redirect.js"],
+      "run_at": "document_idle"
     }
   ],
   "background": {

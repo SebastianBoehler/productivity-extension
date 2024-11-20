@@ -4,17 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Settings</title>
-    <!-- Include Tailwind CSS Locally -->
     <link href="css/tailwind.min.css" rel="stylesheet" />
     <style>
-      /* Set a minimum width and height for the popup */
-      html,
-      body {
+      html, body {
         min-width: 400px;
         min-height: 300px;
+        background-color: white;
       }
-
-      /* Optional: Custom Tailwind Configuration */
+      
+      .checkbox-wrapper input[type="checkbox"] {
+        @apply h-4 w-4 rounded border-gray-300 text-indigo-600 transition duration-150 ease-in-out;
+      }
+      
+      .checkbox-wrapper input[type="checkbox"]:hover {
+        @apply cursor-pointer border-indigo-500;
+      }
+      
+      .section-transition {
+        @apply transition-all duration-200 ease-in-out;
+      }
+      
+      .section-transition:hover {
+        @apply transform scale-[1.01];
+      }
+      
       .youtube {
         /* color: #ff0000; */
       }
@@ -23,127 +36,85 @@
       }
     </style>
   </head>
-  <body class="bg-gray-100">
-    <div class="w-full max-w-md mx-auto bg-white shadow-lg rounded-lg">
-      <h1 class="text-xl font-bold text-gray-800 p-4 border-b">
+  <body class="bg-white">
+    <div class="w-full max-w-md mx-auto bg-white shadow-xl overflow-hidden">
+      <h1 class="text-lg font-bold text-gray-800 p-4 border-b bg-gradient-to-r from-gray-50 to-white">
         Productivity Extension
       </h1>
 
       <!-- YouTube Section -->
-      <div class="p-4">
-        <div class="flex items-center space-x-3">
-          <input
-            type="checkbox"
-            id="youtube"
-            class="h-4 w-4 border-gray-300 rounded focus:ring-youtube"
-          />
-          <label for="youtube" class="text-lg font-semibold youtube"
-            >YouTube</label
-          >
+      <div class="p-4 section-transition">
+        <div class="flex items-center space-x-3 mb-4">
+          <div class="checkbox-wrapper">
+            <input
+              type="checkbox"
+              id="youtube"
+              class="h-4 w-4 border-gray-300 rounded focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+          <label for="youtube" class="text-lg font-semibold youtube">YouTube</label>
         </div>
-        <div class="mt-2 space-y-2">
-          <div class="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              id="toggleRecommendations"
-              class="h-4 w-4 border-gray-300 rounded focus:ring-youtube"
-            />
-            <label for="toggleRecommendations" class="text-sm text-gray-700"
-              >Hide Recommendations</label
-            >
+        <div class="ml-7 space-y-3">
+          <div class="checkbox-wrapper flex items-center space-x-2">
+            <input type="checkbox" id="toggleRecommendations" />
+            <label for="toggleRecommendations" class="text-sm text-gray-700">Hide Recommendations</label>
           </div>
-          <div class="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              id="toggleComments"
-              class="h-4 w-4 border-gray-300 rounded focus:ring-youtube"
-            />
-            <label for="toggleComments" class="text-sm text-gray-700"
-              >Hide Comments</label
-            >
+          <div class="checkbox-wrapper flex items-center space-x-2">
+            <input type="checkbox" id="toggleComments" />
+            <label for="toggleComments" class="text-sm text-gray-700">Hide Comments</label>
           </div>
-          <div class="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              id="toggleShorts"
-              class="h-4 w-4 border-gray-300 rounded focus:ring-youtube"
-            />
-            <label for="toggleShorts" class="text-sm text-gray-700"
-              >Hide Shorts</label
-            >
+          <div class="checkbox-wrapper flex items-center space-x-2">
+            <input type="checkbox" id="toggleShorts" />
+            <label for="toggleShorts" class="text-sm text-gray-700">Hide Shorts</label>
           </div>
-          <div class="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              id="toggleHomeFeed"
-              class="h-4 w-4 border-gray-300 rounded focus:ring-youtube"
-            />
-            <label for="toggleHomeFeed" class="text-sm text-gray-700"
-              >Replace home feed with subscription feed</label
-            >
+          <div class="checkbox-wrapper flex items-center space-x-2">
+            <input type="checkbox" id="toggleHomeFeed" />
+            <label for="toggleHomeFeed" class="text-sm text-gray-700">Replace home feed with subscription feed</label>
           </div>
         </div>
       </div>
 
       <!-- Instagram Section -->
-      <div class="p-4">
-        <div class="flex items-center space-x-3">
-          <input
-            type="checkbox"
-            id="instagram"
-            class="h-4 w-4 border-gray-300 rounded focus:ring-instagram"
-          />
-          <label for="instagram" class="text-lg font-semibold instagram"
-            >Instagram</label
-          >
+      <div class="p-4 border-t section-transition">
+        <div class="flex items-center space-x-3 mb-4">
+          <div class="checkbox-wrapper">
+            <input
+              type="checkbox"
+              id="instagram"
+              class="h-4 w-4 border-gray-300 rounded focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+          <label for="instagram" class="text-lg font-semibold instagram">Instagram</label>
         </div>
-        <div class="mt-2 space-y-2">
-          <div class="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              id="toggleExploreFeed"
-              class="h-4 w-4 border-gray-300 rounded focus:ring-instagram"
-            />
-            <label for="toggleExploreFeed" class="text-sm text-gray-700"
-              >Disable explore feed</label
-            >
+        <div class="ml-7 space-y-3">
+          <div class="checkbox-wrapper flex items-center space-x-2">
+            <input type="checkbox" id="toggleExploreFeed" />
+            <label for="toggleExploreFeed" class="text-sm text-gray-700">Disable explore feed</label>
           </div>
-          <div class="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              id="toggleReelsFeed"
-              class="h-4 w-4 border-gray-300 rounded focus:ring-instagram"
-            />
-            <label for="toggleReelsFeed" class="text-sm text-gray-700"
-              >Disable reels feed</label
-            >
+          <div class="checkbox-wrapper flex items-center space-x-2">
+            <input type="checkbox" id="toggleReelsFeed" />
+            <label for="toggleReelsFeed" class="text-sm text-gray-700">Disable reels feed</label>
           </div>
-          <!-- New option for disabling "For You" page -->
-          <div class="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              id="toggleForYouPage"
-              class="h-4 w-4 border-gray-300 rounded focus:ring-instagram"
-            />
-            <label for="toggleForYouPage" class="text-sm text-gray-700"
-              >Disable "For You" page</label
-            >
+          <div class="checkbox-wrapper flex items-center space-x-2">
+            <input type="checkbox" id="toggleForYouPage" />
+            <label for="toggleForYouPage" class="text-sm text-gray-700">Disable "For You" page</label>
+          </div>
+          <div class="checkbox-wrapper flex items-center space-x-2">
+            <input type="checkbox" id="toggleSearchButton" />
+            <label for="toggleSearchButton" class="text-sm text-gray-700">Hide search button</label>
           </div>
         </div>
       </div>
 
       <!-- Footer -->
-      <footer
-        class="bg-gray-200 p-4 text-center text-gray-700 text-sm border-t"
-      >
+      <footer class="bg-gray-50 p-4 text-center text-gray-600 text-sm border-t">
         <p>
           Contribute or request features on
           <a
             href="https://github.com/SebastianBoehler/productivity-extension"
-            class="text-blue-600 hover:underline"
+            class="text-indigo-600 hover:text-indigo-500 hover:underline transition-colors duration-150"
             target="_blank"
-            >GitHub</a
-          >.
+          >GitHub</a>.
         </p>
       </footer>
     </div>

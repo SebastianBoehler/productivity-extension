@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let toggleExploreFeedCheckbox = document.getElementById('toggleExploreFeed');
   let toggleReelsFeedCheckbox = document.getElementById('toggleReelsFeed');
   let toggleForYouPageCheckbox = document.getElementById('toggleForYouPage');
+  let toggleSearchButtonCheckbox = document.getElementById('toggleSearchButton');
 
   function applyStates(settings) {
     if (settings) {
@@ -24,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
       toggleExploreFeedCheckbox.checked = settings.instagram ? !!settings.toggleExploreFeed : false;
       toggleReelsFeedCheckbox.checked = settings.instagram ? !!settings.toggleReelsFeed : false;
       toggleForYouPageCheckbox.checked = settings.instagram ? !!settings.toggleForYouPage : false;
+      toggleSearchButtonCheckbox.checked = settings.instagram ? !!settings.toggleSearchButton : false;
     }
   }
 
@@ -125,6 +127,17 @@ document.addEventListener('DOMContentLoaded', function () {
       var settings = data.settings || {};
       settings.toggleForYouPage = toggleForYouPageCheckbox.checked;
       if (toggleForYouPageCheckbox.checked) settings.instagram = true;
+      chrome.storage.sync.set({ 'settings': settings });
+      applyStates(settings);
+    });
+  });
+
+  // Update toggle search button state to storage
+  toggleSearchButtonCheckbox.addEventListener('change', function () {
+    chrome.storage.sync.get('settings', function (data) {
+      var settings = data.settings || {};
+      settings.toggleSearchButton = toggleSearchButtonCheckbox.checked;
+      if (toggleSearchButtonCheckbox.checked) settings.instagram = true;
       chrome.storage.sync.set({ 'settings': settings });
       applyStates(settings);
     });

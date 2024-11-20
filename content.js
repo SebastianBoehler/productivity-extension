@@ -78,7 +78,7 @@ async function applySettings(settings) {
     }
   }
 
-  const { instagram, toggleExploreFeed, toggleReelsFeed, toggleForYouPage } = settings;
+  const { instagram, toggleExploreFeed, toggleReelsFeed, toggleForYouPage, toggleSearchButton } = settings;
 
   if (instagram) {
     if (toggleExploreFeed) {
@@ -109,6 +109,26 @@ async function applySettings(settings) {
 
       // Set up a MutationObserver to handle dynamically loaded content
       const observer = new MutationObserver(removeForYouButton);
+      observer.observe(document.body, { childList: true, subtree: true });
+    }
+
+    if (toggleSearchButton) {
+      // Remove the search button
+      const removeSearchButton = () => {
+        const searchButton = document.querySelector('a[href="#"][role="link"] svg[aria-label="Suche"]');
+        if (searchButton) {
+          const buttonContainer = searchButton.closest('a[href="#"][role="link"]');
+          if (buttonContainer) {
+            buttonContainer.style.display = 'none';
+          }
+        }
+      };
+
+      // Initial removal
+      removeSearchButton();
+
+      // Set up a MutationObserver to handle dynamically loaded content
+      const observer = new MutationObserver(removeSearchButton);
       observer.observe(document.body, { childList: true, subtree: true });
     }
   }
