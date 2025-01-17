@@ -13,11 +13,15 @@ A powerful Chrome extension designed to enhance your productivity by providing g
 - **Clean Navigation**: Streamlined interface with reduced distractions
 
 ![YouTube with grayscale thumbnails](screenshots/Youtube_gray_thumbnails.png)
+*YouTube with grayscale thumbnails enabled*
 
 ### Instagram Customization
 - **Explore Feed Control**: Disable the Instagram Explore feed to avoid endless browsing
 - **Reels Management**: Option to hide Instagram Reels
 - **Focused Browsing**: Stay connected with friends without getting lost in suggested content
+
+![Instagram with reduced menu sidebar](screenshots/Instagram_reduced_menu_sidebar.png)
+*Instagram with explore feed and reels disabled*
 
 ## Installation
 
