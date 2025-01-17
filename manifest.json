@@ -5,22 +5,26 @@
   "permissions": [
     "storage",
     "declarativeNetRequest",
-    "declarativeNetRequestWithHostAccess"
+    "declarativeNetRequestWithHostAccess",
+    "tabs",
+    "webNavigation"
+  ],
+  "host_permissions": [
+    "<all_urls>"
   ],
   "action": {
     "default_popup": "popup.html"
   },
   "content_scripts": [
     {
-      "matches": ["*://www.youtube.com/*", "*://www.instagram.com/*"],
-      "js": ["content.js", "redirect.js"],
+      "matches": ["<all_urls>"],
+      "js": ["content.js", "redirect.js", "study-mode.js"],
       "run_at": "document_idle"
     }
   ],
   "background": {
     "service_worker": "background.js"
   },
-  "host_permissions": ["*://www.youtube.com/*", "*://www.instagram.com/*"],
   "web_accessible_resources": [
     {
       "resources": ["rules.json"],

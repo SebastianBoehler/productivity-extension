@@ -114,6 +114,31 @@
         </div>
       </div>
 
+      <!-- Study Mode Section -->
+      <div class="p-4 border-t section-transition">
+        <div class="flex items-center space-x-3 mb-4">
+          <div class="checkbox-wrapper">
+            <input type="checkbox" id="studyMode" class="focus:ring-indigo-500"/>
+          </div>
+          <label for="studyMode" class="text-lg font-semibold">Study Mode</label>
+        </div>
+        <div class="ml-7 space-y-3" id="studyModeSettings">
+          <div class="text-sm text-gray-600">Block these sites during study mode:</div>
+          <div class="space-y-2">
+            <div class="checkbox-wrapper flex items-center space-x-2">
+              <input type="checkbox" id="blockSocial" checked />
+              <label for="blockSocial" class="text-sm text-gray-700">Social Media</label>
+            </div>
+            <div class="checkbox-wrapper flex items-center space-x-2">
+              <input type="checkbox" id="blockVideo" checked />
+              <label for="blockVideo" class="text-sm text-gray-700">Video Sites</label>
+            </div>
+          </div>
+          <div class="text-sm text-gray-600 mt-2">Trigger study mode when visiting:</div>
+          <input type="text" id="studyTriggers" class="w-full p-2 border rounded text-sm" placeholder="e.g., coursera.org, edx.org"/>
+        </div>
+      </div>
+
       <!-- Footer -->
       <footer class="bg-gray-50 p-4 text-center text-gray-600 text-sm border-t">
         <p>
@@ -127,6 +152,7 @@
       </footer>
     </div>
 
+    <script src="study-mode.js"></script>
     <script src="popup.js"></script>
   </body>
 </html>
