@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let toggleHomeFeedCheckbox = document.getElementById('toggleHomeFeed');
   let toggleCommentsCheckbox = document.getElementById('toggleComments');
   let toggleShortsCheckbox = document.getElementById('toggleShorts');
+  let grayThumbnailsCheckbox = document.getElementById('grayThumbnails');
 
   let instagramCheckbox = document.getElementById('instagram');
   let toggleExploreFeedCheckbox = document.getElementById('toggleExploreFeed');
@@ -19,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
       toggleHomeFeedCheckbox.checked = settings.youtube ? !!settings.toggleHomeFeed : false;
       toggleCommentsCheckbox.checked = settings.youtube ? !!settings.toggleComments : false;
       toggleShortsCheckbox.checked = settings.youtube ? !!settings.toggleShorts : false;
+      grayThumbnailsCheckbox.checked = settings.youtube ? !!settings.grayThumbnails : false;
 
       //instagram
       instagramCheckbox.checked = !!settings.instagram;
@@ -74,6 +76,17 @@ document.addEventListener('DOMContentLoaded', function () {
       var settings = data.settings || {};
       settings.toggleShorts = toggleShortsCheckbox.checked;
       if (toggleShortsCheckbox.checked) settings.youtube = true;
+      chrome.storage.sync.set({ 'settings': settings });
+      applyStates(settings);
+    });
+  });
+
+  // Update grayscale thumbnails state to storage
+  grayThumbnailsCheckbox.addEventListener('change', function () {
+    chrome.storage.sync.get('settings', function (data) {
+      var settings = data.settings || {};
+      settings.grayThumbnails = grayThumbnailsCheckbox.checked;
+      if (grayThumbnailsCheckbox.checked) settings.youtube = true;
       chrome.storage.sync.set({ 'settings': settings });
       applyStates(settings);
     });

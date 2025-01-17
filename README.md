@@ -9,7 +9,10 @@ A powerful Chrome extension designed to enhance your productivity by providing g
 - **Recommendation Blocking**: Remove suggested videos from the sidebar
 - **Comment Section Toggle**: Hide comments to avoid distracting discussions
 - **Shorts Removal**: Disable YouTube Shorts to stay focused on regular content
+- **Grayscale Thumbnails**: Convert video thumbnails to grayscale to reduce visual distraction
 - **Clean Navigation**: Streamlined interface with reduced distractions
+
+![YouTube with grayscale thumbnails](screenshots/Youtube_gray_thumbnails.png)
 
 ### Instagram Customization
 - **Explore Feed Control**: Disable the Instagram Explore feed to avoid endless browsing

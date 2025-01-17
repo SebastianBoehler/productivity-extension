@@ -1,4 +1,18 @@
-let settings = undefined
+let settings = undefined;
+let domCache = {};
+
+// Debounce function to limit how often a function can be called
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
 
 async function loadSettings() {
   return new Promise((resolve, reject) => {
@@ -13,131 +27,127 @@ async function loadSettings() {
   })
 }
 
+// Cache DOM elements for better performance
+function updateDOMCache() {
+  if (window.location.hostname.includes('youtube.com')) {
+    domCache = {
+      secondary: document.getElementById('secondary'),
+      guideSections: document.querySelector('.ytd-guide-renderer#sections'),
+      comments: document.querySelector('[section-identifier="comment-item-section"], ytd-comments'),
+      shorts: document.querySelector('[is-shorts]'),
+      shortsInSearch: document.querySelectorAll('.style-scope ytd-reel-shelf-renderer'),
+      shortsLockup: document.querySelectorAll('ytm-shorts-lockup-view-model-v2.shortsLockupViewModelHost.style-scope.ytd-rich-item-renderer'),
+      thumbnails: document.querySelectorAll('ytd-thumbnail')
+    };
+  } else if (window.location.hostname.includes('instagram.com')) {
+    domCache = {
+      explore: document.querySelector('[href="/explore/"]'),
+      reels: document.querySelector('[href="/reels/"]'),
+      forYou: document.querySelector('div[aria-label="Für dich"][role="button"]'),
+      search: document.querySelector('a[href="#"][role="link"] svg[aria-label="Suche"]')?.closest('a[href="#"][role="link"]')
+    };
+  }
+}
+
 async function applySettings(settings) {
   if (!settings) {
     settings = await loadSettings();
   }
-  //go over features and apply them
-  //console.log('Applying settings:', settings);
-  const { toggleHomeFeed, toggleRecommendations, toggleComments, toggleShorts, youtube } = settings;
 
-  //all youtube features
+  updateDOMCache();
+  
+  const { youtube, instagram } = settings;
+
   if (youtube) {
-    if (toggleRecommendations) {
-      //remove recommendations feed on the right
-      const secondaryElement = document.getElementById('secondary');
-      if (secondaryElement) {
-        secondaryElement.remove();
-      }
+    applyYouTubeSettings(settings);
+  }
 
-      const parentElement = document.querySelector('.ytd-guide-renderer#sections')
-      if (parentElement && parentElement.children.length >= 3) {
-        const thirdChild = parentElement.children[2];
-        if (thirdChild) thirdChild.setAttribute('style', 'display: none !important');
-      }
+  if (instagram) {
+    applyInstagramSettings(settings);
+  }
+}
+
+function applyYouTubeSettings(settings) {
+  const { toggleRecommendations, toggleHomeFeed, toggleComments, toggleShorts, grayThumbnails } = settings;
+
+  if (toggleRecommendations && domCache.secondary) {
+    domCache.secondary.remove();
+    
+    if (domCache.guideSections?.children[2]) {
+      domCache.guideSections.children[2].setAttribute('style', 'display: none !important');
+    }
+  }
+
+  if (toggleHomeFeed && domCache.guideSections) {
+    const items = domCache.guideSections.querySelector("#items");
+    if (items?.firstChild) {
+      items.firstChild.style.display = 'none';
+    }
+  }
+
+  if (toggleComments && domCache.comments) {
+    domCache.comments.style.display = 'none';
+  }
+
+  if (toggleShorts) {
+    if (domCache.shorts) {
+      domCache.shorts.style.display = 'none';
     }
 
-    if (toggleHomeFeed) {
-      let sectionsElement = document.querySelector('.ytd-guide-renderer#sections')
-      if (sectionsElement) {
-        let itemsElement = sectionsElement.querySelector("#items");
-        if (itemsElement && itemsElement.firstChild) {
-          itemsElement.firstChild.style.display = 'none';
-        }
-      }
+    if (domCache.shortsInSearch) {
+      domCache.shortsInSearch.forEach(element => {
+        element.style.display = 'none';
+      });
     }
 
-    if (toggleComments) {
-      let commentsElement = document.querySelector('[section-identifier="comment-item-section"]');
-      if (commentsElement) {
-        commentsElement.style.display = 'none';
-      }
+    if (domCache.shortsLockup) {
+      domCache.shortsLockup.forEach(element => {
+        element.style.display = 'none';
+      });
     }
 
-    if (toggleShorts) {
-      let shortsElementinFeed = document.querySelector('[is-shorts]')
-      if (shortsElementinFeed) {
-        shortsElementinFeed.style.display = 'none';
-      }
-
-      let shortsElementInSearch = document.querySelectorAll('.style-scope ytd-reel-shelf-renderer')
-      if (shortsElementInSearch) {
-        shortsElementInSearch.forEach(element => {
-          element.style.display = 'none';
-        });
-      }
-
-      let sectionsElement = document.querySelector('.ytd-guide-renderer#sections')
-      if (sectionsElement) {
-        let itemsElement = sectionsElement.querySelector("#items");
-        if (itemsElement && itemsElement.children.length >= 2) {
-          const secondChild = itemsElement.children[1];
-          if (secondChild) secondChild.style.display = 'none';
-        }
+    if (domCache.guideSections) {
+      const items = domCache.guideSections.querySelector("#items");
+      if (items?.children[1]) {
+        items.children[1].style.display = 'none';
       }
     }
   }
 
-  const { instagram, toggleExploreFeed, toggleReelsFeed, toggleForYouPage, toggleSearchButton } = settings;
+  if (grayThumbnails && domCache.thumbnails) {
+    domCache.thumbnails.forEach(thumbnail => {
+      thumbnail.style.setProperty('filter', 'grayscale(100%)', 'important');
+    });
+  } else if (!grayThumbnails && domCache.thumbnails) {
+    domCache.thumbnails.forEach(thumbnail => {
+      thumbnail.style.removeProperty('filter');
+    });
+  }
+}
 
-  if (instagram) {
-    if (toggleExploreFeed) {
-      let exploreFeedElement = document.querySelector('[href="/explore/"]')
-      if (exploreFeedElement) {
-        exploreFeedElement.style.display = 'none';
-      }
-    }
+function applyInstagramSettings(settings) {
+  const { toggleExploreFeed, toggleReelsFeed, toggleForYouPage, toggleSearchButton } = settings;
 
-    if (toggleReelsFeed) {
-      let reelsFeedElement = document.querySelector('[href="/reels/"]')
-      if (reelsFeedElement) {
-        reelsFeedElement.style.display = 'none';
-      }
-    }
+  if (toggleExploreFeed && domCache.explore) {
+    domCache.explore.style.display = 'none';
+  }
 
-    if (toggleForYouPage) {
-      // Remove the "For You" button
-      const removeForYouButton = () => {
-        const forYouButton = document.querySelector('div[aria-label="Für dich"][role="button"]');
-        if (forYouButton) {
-          forYouButton.style.display = 'none';
-        }
-      };
+  if (toggleReelsFeed && domCache.reels) {
+    domCache.reels.style.display = 'none';
+  }
 
-      // Initial removal
-      removeForYouButton();
+  if (toggleForYouPage && domCache.forYou) {
+    domCache.forYou.style.display = 'none';
+  }
 
-      // Set up a MutationObserver to handle dynamically loaded content
-      const observer = new MutationObserver(removeForYouButton);
-      observer.observe(document.body, { childList: true, subtree: true });
-    }
-
-    if (toggleSearchButton) {
-      // Remove the search button
-      const removeSearchButton = () => {
-        const searchButton = document.querySelector('a[href="#"][role="link"] svg[aria-label="Suche"]');
-        if (searchButton) {
-          const buttonContainer = searchButton.closest('a[href="#"][role="link"]');
-          if (buttonContainer) {
-            buttonContainer.style.display = 'none';
-          }
-        }
-      };
-
-      // Initial removal
-      removeSearchButton();
-
-      // Set up a MutationObserver to handle dynamically loaded content
-      const observer = new MutationObserver(removeSearchButton);
-      observer.observe(document.body, { childList: true, subtree: true });
-    }
+  if (toggleSearchButton && domCache.search) {
+    domCache.search.style.display = 'none';
   }
 }
 
 // Listen for messages from the background script
 chrome.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
-    console.log('Received message:', request);
     if (request.action === 'settingsChanged') {
       settings = request.settings;
       applySettings(settings);
@@ -145,8 +155,51 @@ chrome.runtime.onMessage.addListener(
   }
 );
 
-
-
-new MutationObserver(() => {
+// Immediately load and apply settings when the script starts
+loadSettings().then(initialSettings => {
+  settings = initialSettings;
+  // Apply settings immediately and then set up the observer
   applySettings(settings);
-}).observe(document, { subtree: true, childList: true });
+}).catch(() => {
+  console.log('No initial settings found');
+});
+
+// Throttled mutation observer
+const debouncedApplySettings = debounce(() => applySettings(settings), 250);
+
+// Single MutationObserver with optimized configuration
+const observer = new MutationObserver((mutations) => {
+  // Check if any of the mutations are relevant to our interests
+  const relevantChange = mutations.some(mutation => {
+    // Skip style changes and characterData changes
+    if (mutation.type !== 'childList') return false;
+    
+    // Check if added nodes contain relevant elements
+    return Array.from(mutation.addedNodes).some(node => {
+      if (node.nodeType !== Node.ELEMENT_NODE) return false;
+      return node.querySelector && (
+        node.querySelector('[section-identifier="comment-item-section"]') ||
+        node.querySelector('ytd-comments') ||
+        node.querySelector('[is-shorts]') ||
+        node.querySelector('ytm-shorts-lockup-view-model-v2.shortsLockupViewModelHost.style-scope.ytd-rich-item-renderer') ||
+        node.querySelector('ytd-thumbnail') ||
+        node.querySelector('[href="/explore/"]') ||
+        node.querySelector('[href="/reels/"]') ||
+        node.querySelector('div[aria-label="Für dich"][role="button"]') ||
+        node.querySelector('a[href="#"][role="link"] svg[aria-label="Suche"]')
+      );
+    });
+  });
+
+  if (relevantChange) {
+    debouncedApplySettings();
+  }
+});
+
+// Start observing with a more specific configuration
+observer.observe(document.body, {
+  childList: true,
+  subtree: true,
+  attributes: false,
+  characterData: false
+});
