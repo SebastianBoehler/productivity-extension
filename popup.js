@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
   let toggleCommentsCheckbox = document.getElementById('toggleComments');
   let toggleShortsCheckbox = document.getElementById('toggleShorts');
   let grayThumbnailsCheckbox = document.getElementById('grayThumbnails');
+  let hideThumbnailsCheckbox = document.getElementById('hideThumbnails');
 
   let instagramCheckbox = document.getElementById('instagram');
   let toggleExploreFeedCheckbox = document.getElementById('toggleExploreFeed');
@@ -21,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
       toggleCommentsCheckbox.checked = settings.youtube ? !!settings.toggleComments : false;
       toggleShortsCheckbox.checked = settings.youtube ? !!settings.toggleShorts : false;
       grayThumbnailsCheckbox.checked = settings.youtube ? !!settings.grayThumbnails : false;
+      hideThumbnailsCheckbox.checked = settings.youtube ? !!settings.hideThumbnails : false;
 
       //instagram
       instagramCheckbox.checked = !!settings.instagram;
@@ -86,9 +88,26 @@ document.addEventListener('DOMContentLoaded', function () {
     chrome.storage.sync.get('settings', function (data) {
       var settings = data.settings || {};
       settings.grayThumbnails = grayThumbnailsCheckbox.checked;
-      if (grayThumbnailsCheckbox.checked) settings.youtube = true;
+      if (grayThumbnailsCheckbox.checked) {
+        settings.youtube = true;
+        settings.hideThumbnails = false;
+        hideThumbnailsCheckbox.checked = false;
+      }
       chrome.storage.sync.set({ 'settings': settings });
-      applyStates(settings);
+    });
+  });
+
+  // Update hide thumbnails state to storage
+  hideThumbnailsCheckbox.addEventListener('change', function () {
+    chrome.storage.sync.get('settings', function (data) {
+      var settings = data.settings || {};
+      settings.hideThumbnails = hideThumbnailsCheckbox.checked;
+      if (hideThumbnailsCheckbox.checked) {
+        settings.youtube = true;
+        settings.grayThumbnails = false;
+        grayThumbnailsCheckbox.checked = false;
+      }
+      chrome.storage.sync.set({ 'settings': settings });
     });
   });
 

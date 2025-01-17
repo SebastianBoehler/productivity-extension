@@ -68,7 +68,7 @@ async function applySettings(settings) {
 }
 
 function applyYouTubeSettings(settings) {
-  const { toggleRecommendations, toggleHomeFeed, toggleComments, toggleShorts, grayThumbnails } = settings;
+  const { toggleRecommendations, toggleHomeFeed, toggleComments, toggleShorts, grayThumbnails, hideThumbnails } = settings;
 
   if (toggleRecommendations && domCache.secondary) {
     domCache.secondary.remove();
@@ -114,13 +114,16 @@ function applyYouTubeSettings(settings) {
     }
   }
 
-  if (grayThumbnails && domCache.thumbnails) {
+  if (domCache.thumbnails) {
     domCache.thumbnails.forEach(thumbnail => {
-      thumbnail.style.setProperty('filter', 'grayscale(100%)', 'important');
-    });
-  } else if (!grayThumbnails && domCache.thumbnails) {
-    domCache.thumbnails.forEach(thumbnail => {
-      thumbnail.style.removeProperty('filter');
+      if (hideThumbnails) {
+        thumbnail.style.display = 'none';
+      } else if (grayThumbnails) {
+        thumbnail.style.filter = 'grayscale(100%)';
+      } else {
+        thumbnail.style.filter = 'none';
+        thumbnail.style.display = '';
+      }
     });
   }
 }
