@@ -1,3 +1,5 @@
+import { setTheme, initTheme } from './utils.js';
+
 document.addEventListener('DOMContentLoaded', function () {
   let youtubeCheckbox = document.getElementById('youtube');
   let recommendationsCheckbox = document.getElementById('toggleRecommendations');
@@ -12,6 +14,9 @@ document.addEventListener('DOMContentLoaded', function () {
   let toggleReelsFeedCheckbox = document.getElementById('toggleReelsFeed');
   let toggleForYouPageCheckbox = document.getElementById('toggleForYouPage');
   let toggleSearchButtonCheckbox = document.getElementById('toggleSearchButton');
+
+  // Theme initialisieren
+  initTheme();
 
   function applyStates(settings) {
     if (settings) {
