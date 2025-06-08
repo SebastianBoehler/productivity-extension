@@ -6,17 +6,18 @@
     <title>Settings</title>
     <!-- Tailwind CDN for dev/modern browsers, fallback auf lokale Datei falls offline -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet" onerror="this.onerror=null;this.href='css/tailwind.min.css';" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
     <style>
       /* Remove inline Tailwind for centralization */
     </style>
   </head>
-  <body class="bg-white">
-    <div class="w-full max-w-md mx-auto card mt-8">
+  <body class="bg-white font-sans">
+    <div class="w-full max-w-sm mx-auto card mt-6">
       <div class="flex justify-between items-center p-4 border-b bg-gradient-to-r from-zinc-50 to-white dark:from-zinc-900 dark:to-zinc-800">
-        <h1 class="text-xl font-bold text-zinc-800 dark:text-zinc-100 flex items-center gap-2">
-          <img src="misc/Icon.jpg" alt="Logo" class="w-7 h-7 rounded-full shadow" />
-          Productivity Extension
+        <h1 class="text-xl font-semibold text-zinc-800 dark:text-zinc-100 flex items-center gap-2">
+          <img src="misc/Icon.jpg" alt="Logo" class="w-6 h-6 rounded-full shadow" />
+          FocusFeed
         </h1>
         <!-- Dark/Light Mode Toggle -->
         <label class="toggle-switch ml-2">
