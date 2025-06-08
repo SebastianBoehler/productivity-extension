@@ -4,29 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Settings</title>
-    <!-- Tailwind CDN for dev/modern browsers, fallback auf lokale Datei falls offline -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet" onerror="this.onerror=null;this.href='css/tailwind.min.css';" />
-    <link href="css/app.css" rel="stylesheet" />
-    <style>
-      /* Remove inline Tailwind for centralization */
-    </style>
+    <!-- Use Tailwind via JS (compiled CDN build saved locally) -->
+    <script src="css/tailwind.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   </head>
-  <body class="bg-white">
-    <div class="w-full max-w-md mx-auto card mt-8">
-      <div class="flex justify-between items-center p-4 border-b bg-gradient-to-r from-zinc-50 to-white dark:from-zinc-900 dark:to-zinc-800">
-        <h1 class="text-xl font-bold text-zinc-800 dark:text-zinc-100 flex items-center gap-2">
-          <img src="misc/Icon.jpg" alt="Logo" class="w-7 h-7 rounded-full shadow" />
-          Productivity Extension
+  <body class="bg-white dark:bg-gray-900 font-sans w-80 mx-auto p-4 text-black dark:text-white">
+    <div class="w-full">
+      <div class="flex justify-between items-center p-4">
+        <h1 class="text-xl font-semibold flex items-center gap-2">
+          FocusFeed
         </h1>
-        <!-- Dark/Light Mode Toggle -->
-        <label class="toggle-switch ml-2">
-          <input type="checkbox" id="themeToggle" />
-          <span class="toggle-slider"></span>
+        <!-- Dark/Light Mode Tailwind Toggle -->
+        <label for="themeToggle" class="inline-flex items-center cursor-pointer ml-2">
+          <span class="relative">
+            <input id="themeToggle" type="checkbox" class="sr-only peer">
+            <div class="w-10 h-6 bg-gray-300 rounded-full peer dark:bg-gray-600 peer-checked:bg-indigo-600 transition-colors duration-200"></div>
+            <div class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow peer-checked:translate-x-4 transform transition-transform duration-200"></div>
+          </span>
         </label>
       </div>
 
       <!-- YouTube Section -->
-      <div class="section">
+      <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-4 shadow">
         <div class="flex items-center space-x-3 mb-4">
           <div class="checkbox-wrapper">
             <input
@@ -65,7 +64,7 @@
       </div>
 
       <!-- Instagram Section -->
-      <div class="section">
+      <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-4 shadow">
         <div class="flex items-center space-x-3 mb-4">
           <div class="checkbox-wrapper">
             <input
@@ -96,7 +95,7 @@
       </div>
 
       <!-- Study Mode Section -->
-      <div class="section">
+      <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-4 shadow">
         <div class="flex items-center space-x-3 mb-4">
           <div class="checkbox-wrapper">
             <input type="checkbox" id="studyMode" />
