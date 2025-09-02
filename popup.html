@@ -24,116 +24,57 @@
         </label>
       </div>
 
-      <!-- YouTube Section -->
+      <!-- YouTube Section (minimal in popup) -->
       <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-4 shadow">
-        <div class="flex items-center space-x-3 mb-4">
-          <div class="checkbox-wrapper">
-            <input
-              type="checkbox"
-              id="youtube"
-            />
+        <div class="flex items-center justify-between mb-1">
+          <div class="flex items-center gap-3">
+            <input type="checkbox" id="youtube" class="w-5 h-5" />
+            <label for="youtube" class="text-lg font-semibold">YouTube</label>
           </div>
-          <label for="youtube" class="text-lg font-semibold youtube">YouTube</label>
+          <button id="openYTSettings" class="text-indigo-600 text-sm hover:underline">Configure</button>
         </div>
-        <div class="ml-7 space-y-3">
-          <div class="checkbox-wrapper flex items-center space-x-2">
-            <input type="checkbox" id="toggleRecommendations" />
-            <label for="toggleRecommendations" class="text-sm">Hide Recommendations</label>
-          </div>
-          <div class="checkbox-wrapper flex items-center space-x-2">
-            <input type="checkbox" id="toggleComments" />
-            <label for="toggleComments" class="text-sm">Hide Comments</label>
-          </div>
-          <div class="checkbox-wrapper flex items-center space-x-2">
-            <input type="checkbox" id="toggleShorts" />
-            <label for="toggleShorts" class="text-sm">Hide Shorts</label>
-          </div>
-          <div class="checkbox-wrapper flex items-center space-x-2">
-            <input type="checkbox" id="toggleHomeFeed" />
-            <label for="toggleHomeFeed" class="text-sm">Replace home feed with subscription feed</label>
-          </div>
-          <div class="checkbox-wrapper flex items-center space-x-2">
-            <input type="checkbox" id="grayThumbnails" />
-            <label for="grayThumbnails" class="text-sm">Make thumbnails grayscale</label>
-          </div>
-          <div class="checkbox-wrapper flex items-center space-x-2">
-            <input type="checkbox" id="hideThumbnails" />
-            <label for="hideThumbnails" class="text-sm">Hide all thumbnails</label>
-          </div>
-        </div>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Enable features; manage details in Settings.</p>
       </div>
 
-      <!-- Instagram Section -->
+      <!-- Instagram Section (minimal in popup) -->
       <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-4 shadow">
-        <div class="flex items-center space-x-3 mb-4">
-          <div class="checkbox-wrapper">
-            <input
-              type="checkbox"
-              id="instagram"
-            />
+        <div class="flex items-center justify-between mb-1">
+          <div class="flex items-center gap-3">
+            <input type="checkbox" id="instagram" class="w-5 h-5" />
+            <label for="instagram" class="text-lg font-semibold">Instagram</label>
           </div>
-          <label for="instagram" class="text-lg font-semibold instagram">Instagram</label>
+          <button id="openIGSettings" class="text-indigo-600 text-sm hover:underline">Configure</button>
         </div>
-        <div class="ml-7 space-y-3">
-          <div class="checkbox-wrapper flex items-center space-x-2">
-            <input type="checkbox" id="toggleExploreFeed" />
-            <label for="toggleExploreFeed" class="text-sm">Disable explore feed</label>
-          </div>
-          <div class="checkbox-wrapper flex items-center space-x-2">
-            <input type="checkbox" id="toggleReelsFeed" />
-            <label for="toggleReelsFeed" class="text-sm">Disable reels feed</label>
-          </div>
-          <div class="checkbox-wrapper flex items-center space-x-2">
-            <input type="checkbox" id="toggleForYouPage" />
-            <label for="toggleForYouPage" class="text-sm">Disable "For You" page</label>
-          </div>
-          <div class="checkbox-wrapper flex items-center space-x-2">
-            <input type="checkbox" id="toggleSearchButton" />
-            <label for="toggleSearchButton" class="text-sm">Hide search button</label>
-          </div>
-        </div>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Enable features; manage details in Settings.</p>
       </div>
 
-      <!-- Study Mode Section -->
+      <!-- Study Mode Section (minimal in popup) -->
       <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 mb-4 shadow">
-        <div class="flex items-center space-x-3 mb-4">
-          <div class="checkbox-wrapper">
-            <input type="checkbox" id="studyMode" />
+        <div class="flex items-center justify-between mb-1">
+          <div class="flex items-center gap-3">
+            <input type="checkbox" id="studyMode" class="w-5 h-5" />
+            <label for="studyMode" class="text-lg font-semibold">Study Mode</label>
           </div>
-          <label for="studyMode" class="text-lg font-semibold">Study Mode</label>
+          <button id="openSMSettings" class="text-indigo-600 text-sm hover:underline">Configure</button>
         </div>
-        <div class="ml-7 space-y-3" id="studyModeSettings">
-          <div class="text-sm">Block these sites during study mode:</div>
-          <div class="space-y-2">
-            <div class="checkbox-wrapper flex items-center space-x-2">
-              <input type="checkbox" id="blockSocial" checked />
-              <label for="blockSocial" class="text-sm">Social Media</label>
-            </div>
-            <div class="checkbox-wrapper flex items-center space-x-2">
-              <input type="checkbox" id="blockVideo" checked />
-              <label for="blockVideo" class="text-sm">Video Sites</label>
-            </div>
-          </div>
-          <div class="text-sm mt-2">Trigger study mode when visiting:</div>
-          <input type="text" id="studyTriggers" class="w-full p-2 border rounded text-sm" placeholder="e.g., coursera.org, edx.org"/>
-        </div>
+        <p class="text-xs text-gray-500 dark:text-gray-400">Block distractions and set triggers in Settings.</p>
       </div>
 
       <!-- Footer -->
       <footer class="p-4 text-center text-xs">
-        <p>
-          Contribute or request features on
+        <div class="flex items-center justify-center gap-4">
+          <button id="openOptions" class="px-3 py-1.5 rounded bg-indigo-600 text-white text-xs hover:bg-indigo-500">Open Settings</button>
           <a
             href="https://github.com/SebastianBoehler/productivity-extension"
             class="text-indigo-600 hover:text-indigo-400 hover:underline transition-colors duration-150"
             target="_blank"
-          >GitHub</a>.
-        </p>
+          >GitHub</a>
+        </div>
       </footer>
     </div>
 
     <script type="module" src="utils.js"></script>
     <script src="study-mode.js"></script>
-    <script src="popup.js"></script>
+    <script type="module" src="popup.js"></script>
   </body>
 </html>

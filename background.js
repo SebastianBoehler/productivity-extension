@@ -1,8 +1,12 @@
+// Debug helpers
+const DEBUG = true; // Toggle to reduce logs if needed
+const debugLog = (...args) => { if (DEBUG) console.log('[FocusFeed]', ...args); };
+const debugWarn = (...args) => { if (DEBUG) console.warn('[FocusFeed]', ...args); };
+
 chrome.storage.onChanged.addListener((changes, namespace) => {
   for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
-    console.log(`Storage key "${key}" in namespace "${namespace}" changed.`);
-    console.log(`Old value was "${oldValue}", new value is "${newValue}".`);
-    console.log(oldValue, newValue)
+    debugLog(`Storage key "${key}" in namespace "${namespace}" changed.`);
+    debugLog('Old -> New:', oldValue, newValue)
   }
 
   if (changes.settings?.newValue) {
@@ -22,9 +26,11 @@ function applyRulesBasedOnSettings() {
   chrome.storage.sync.get('settings', function (data) {
     const settings = data.settings || {};
     const rulesToAdd = [];
-    const rulesToRemove = [];
+    // Always remove the known IDs first to avoid duplicate ID errors
+    const BASE_RULE_IDS = [1, 2, 3, 4];
+    const rulesToRemove = [...BASE_RULE_IDS];
 
-    console.log('applyRulesBasedOnSettings', settings)
+    debugLog('applyRulesBasedOnSettings', settings)
 
     // YouTube Home Feed Redirect
     if (settings.toggleHomeFeed && settings.youtube) {
@@ -40,8 +46,6 @@ function applyRulesBasedOnSettings() {
           "resourceTypes": ["main_frame"]
         }
       });
-    } else {
-      rulesToRemove.push(1);
     }
 
     // Instagram Explore Feed Redirect
@@ -58,8 +62,6 @@ function applyRulesBasedOnSettings() {
           "resourceTypes": ["main_frame"]
         }
       });
-    } else {
-      rulesToRemove.push(2);
     }
 
     // Instagram Reels Feed Redirect
@@ -76,8 +78,6 @@ function applyRulesBasedOnSettings() {
           "resourceTypes": ["main_frame"]
         }
       });
-    } else {
-      rulesToRemove.push(3);
     }
 
     // Updated Instagram "For You" Page Redirect
@@ -95,8 +95,6 @@ function applyRulesBasedOnSettings() {
           "resourceTypes": ["main_frame"]
         }
       });
-    } else {
-      rulesToRemove.push(4);
     }
 
     // Update the dynamic rules
@@ -104,7 +102,11 @@ function applyRulesBasedOnSettings() {
       removeRuleIds: rulesToRemove,
       addRules: rulesToAdd
     }, () => {
-      console.log('Dynamic rules updated based on settings:', settings);
+      if (chrome.runtime.lastError) {
+        debugWarn('updateDynamicRules error:', chrome.runtime.lastError.message);
+      } else {
+        debugLog('Dynamic rules updated (base rules) add:', rulesToAdd.map(r => r.id), 'remove:', rulesToRemove);
+      }
     });
   });
 }
@@ -126,59 +128,169 @@ const VIDEO_SITES = [
   '*://*.twitch.tv/*'
 ];
 
-function updateStudyModeRules(studyMode) {
-  const rulesToAdd = [];
+// Helper: build rules based on selected categories and custom sites
+function domainToMainFrameRegex(domain) {
+  const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return '^https?://(?:[^/]*\\.)?' + escapeRe(domain) + '(?::\\d+)?(?:/|$)';
+}
+
+function buildStudyModeRules(studyMode) {
+  const rules = [];
   let ruleId = STUDY_MODE_RULE_START;
-
-  // Only add rules if study mode is enabled and we have triggers
-  if (studyMode.enabled && studyMode.triggers && studyMode.triggers.length > 0) {
-    // Add social media blocking rules
-    if (studyMode.blockSocial) {
-      SOCIAL_MEDIA_SITES.forEach((site, index) => {
-        rulesToAdd.push({
-          "id": ruleId + index,
-          "priority": 2, // Higher priority than redirect rules
-          "action": { "type": "block" },
-          "condition": {
-            "urlFilter": site,
-            "resourceTypes": ["main_frame"]
-          }
-        });
+  if (studyMode.blockSocial) {
+    SOCIAL_MEDIA_SITES.forEach((site) => {
+      const domain = extractDomainFromTrigger(site);
+      if (!domain) return;
+      const regex = domainToMainFrameRegex(domain);
+      rules.push({ id: ruleId++, priority: 2, action: { type: 'block' }, condition: { regexFilter: regex, resourceTypes: ['main_frame'] } });
+    });
+  }
+  if (studyMode.blockVideo) {
+    VIDEO_SITES.forEach((site) => {
+      const domain = extractDomainFromTrigger(site);
+      if (!domain) return;
+      const regex = domainToMainFrameRegex(domain);
+      rules.push({ id: ruleId++, priority: 2, action: { type: 'block' }, condition: { regexFilter: regex, resourceTypes: ['main_frame'] } });
+    });
+  }
+  if (Array.isArray(studyMode.customBlocked) && studyMode.customBlocked.length > 0) {
+    studyMode.customBlocked.forEach((site) => {
+      const domain = extractDomainFromTrigger(site);
+      if (!domain) return;
+      const regex = domainToMainFrameRegex(domain);
+      rules.push({
+        id: ruleId++,
+        priority: 2,
+        action: { type: 'block' },
+        condition: { regexFilter: regex, resourceTypes: ['main_frame'] }
       });
-      ruleId += SOCIAL_MEDIA_SITES.length;
-    }
+    });
+  }
+  debugLog('buildStudyModeRules summary', {
+    total: rules.length,
+    examples: rules.map(r => r.condition.regexFilter || r.condition.urlFilter).slice(0, 10)
+  });
+  return rules;
+}
 
-    // Add video site blocking rules
-    if (studyMode.blockVideo) {
-      VIDEO_SITES.forEach((site, index) => {
-        rulesToAdd.push({
-          "id": ruleId + index,
-          "priority": 2, // Higher priority than redirect rules
-          "action": { "type": "block" },
-          "condition": {
-            "urlFilter": site,
-            "resourceTypes": ["main_frame"]
-          }
-        });
+// Helper: check if any open tab matches any trigger
+// Extract a domain from a user-provided trigger string.
+// Accepts plain domains ("iu.org"), subdomains ("mycampus.iu.org"), or legacy patterns ("*://*.iu.org/*").
+function extractDomainFromTrigger(trigger) {
+  let t = (trigger || '').trim().toLowerCase();
+  if (!t) return '';
+  // Strip protocol/prefix like https:// or *://
+  t = t.replace(/^[a-z*]+:\/\//i, '');
+  // Remove leading wildcard subdomain marker
+  t = t.replace(/^\*\./, '');
+  // Cut at first slash
+  const hostPort = t.split('/')[0];
+  // Remove port if any
+  return hostPort.split(':')[0];
+}
+
+function triggerMatchesUrl(trigger, url) {
+  const domain = extractDomainFromTrigger(trigger);
+  if (!domain) {
+    debugLog('triggerMatchesUrl: empty domain from trigger', trigger);
+    return false;
+  }
+  try {
+    const u = new URL(url);
+    const host = (u.hostname || '').toLowerCase();
+    const match = host === domain || host.endsWith('.' + domain);
+    debugLog('triggerMatchesUrl(domain-mode)', { trigger, domain, url, host, result: match });
+    return match;
+  } catch (e) {
+    // Fallback: pure substring on URL as last resort
+    const res = url.toLowerCase().includes(domain);
+    debugLog('triggerMatchesUrl(url-substring-fallback)', { trigger, domain, url, result: res });
+    return res;
+  }
+}
+
+function anyTabMatchesTriggers(triggers, cb) {
+  if (!Array.isArray(triggers) || triggers.length === 0) {
+    cb(false);
+    return;
+  }
+  debugLog('anyTabMatchesTriggers: evaluating triggers', triggers);
+  chrome.tabs.query({}, (tabs) => {
+    const matchedTabs = [];
+    const matched = tabs.some((tab) => {
+      const url = tab.url || '';
+      const ok = triggers.some((t) => triggerMatchesUrl(t, url));
+      if (ok) matchedTabs.push(url);
+      return ok;
+    });
+    debugLog('anyTabMatchesTriggers: tabs checked:', tabs.length, 'matched:', matched, matchedTabs.slice(0, 5));
+    cb(matched);
+  });
+}
+
+// Update study mode rules, respecting optional trigger gating
+function updateStudyModeRules(studyMode) {
+  const enabled = !!(studyMode && studyMode.enabled);
+  debugLog('updateStudyModeRules: input', studyMode);
+
+  const apply = (shouldEnable) => {
+    const rulesToAdd = shouldEnable ? buildStudyModeRules(studyMode) : [];
+    // Remove existing study mode rules and add new ones.
+    chrome.declarativeNetRequest.getDynamicRules((rules) => {
+      const removeIds = rules
+        .filter((r) => r.id >= STUDY_MODE_RULE_START)
+        .map((r) => r.id);
+      chrome.declarativeNetRequest.updateDynamicRules({
+        removeRuleIds: removeIds,
+        addRules: rulesToAdd
+      }, () => {
+        if (chrome.runtime.lastError) {
+          debugWarn('Study mode rules update error:', chrome.runtime.lastError.message);
+        } else {
+          debugLog('Study mode rules updated', { enabled: shouldEnable, removed: removeIds, added: rulesToAdd.map(r => r.id) });
+        }
       });
-    }
+    });
+  };
+
+  if (!enabled) {
+    debugLog('updateStudyModeRules: disabled');
+    apply(false);
+    return;
   }
 
-  // Remove existing study mode rules and add new ones
-  const removeIds = Array.from(
-    { length: SOCIAL_MEDIA_SITES.length + VIDEO_SITES.length },
-    (_, i) => STUDY_MODE_RULE_START + i
-  );
+  const requireTrigger = !!studyMode.requireTriggerTab;
+  debugLog('updateStudyModeRules: requireTriggerTab', requireTrigger);
+  if (!requireTrigger) {
+    // Always on when study mode enabled
+    debugLog('updateStudyModeRules: applying without trigger gating');
+    apply(true);
+  } else {
+    // Only enable when a trigger tab is open
+    anyTabMatchesTriggers(studyMode.triggers || [], (isActive) => {
+      debugLog('updateStudyModeRules: trigger evaluation result', isActive);
+      apply(isActive);
+    });
+  }
+}
 
-  chrome.declarativeNetRequest.updateDynamicRules({
-    removeRuleIds: removeIds,
-    addRules: rulesToAdd
-  });
+// Debounced refresh when tabs change (for trigger-based activation)
+let studyModeRefreshTimer = null;
+function scheduleStudyModeRefresh(reason = 'unspecified') {
+  debugLog('scheduleStudyModeRefresh called:', reason);
+  if (studyModeRefreshTimer) clearTimeout(studyModeRefreshTimer);
+  studyModeRefreshTimer = setTimeout(() => {
+    chrome.storage.sync.get(['studyMode'], (result) => {
+      debugLog('scheduleStudyModeRefresh: current studyMode', result.studyMode);
+      updateStudyModeRules(result.studyMode || {});
+    });
+  }, 250);
 }
 
 // Listen for study mode changes
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'studyModeChanged') {
+    debugLog('onMessage: studyModeChanged', message.settings);
     updateStudyModeRules(message.settings);
   }
 });
@@ -186,9 +298,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // Initialize study mode rules
 chrome.storage.sync.get(['studyMode'], (result) => {
   if (result.studyMode) {
+    debugLog('init: applying studyMode', result.studyMode);
     updateStudyModeRules(result.studyMode);
   }
 });
+
+// React to tab lifecycle to re-evaluate trigger-gated study mode
+chrome.tabs.onUpdated.addListener(() => scheduleStudyModeRefresh('tabs.onUpdated'));
+chrome.tabs.onRemoved.addListener(() => scheduleStudyModeRefresh('tabs.onRemoved'));
+chrome.tabs.onCreated.addListener(() => scheduleStudyModeRefresh('tabs.onCreated'));
+chrome.tabs.onActivated.addListener(() => scheduleStudyModeRefresh('tabs.onActivated'));
+chrome.windows.onFocusChanged.addListener(() => scheduleStudyModeRefresh('windows.onFocusChanged'));
 
 // Call applyRulesBasedOnSettings initially and whenever settings change
 applyRulesBasedOnSettings();

@@ -1,17 +1,19 @@
 // List of social media sites to block
 const SOCIAL_MEDIA_SITES = [
-  '*://*.facebook.com/*',
-  '*://*.twitter.com/*',
-  '*://*.x.com/*',
-  '*://*.instagram.com/*',
-  '*://*.tiktok.com/*'
+  '*://*.facebook.*',
+  '*://*.twitter.*',
+  '*://*.x.*',
+  '*://*.instagram.*',
+  '*://*.tiktok.*',
+  '*://*.linkedin.*'
 ];
 
 // List of video sites to block
 const VIDEO_SITES = [
-  '*://*.youtube.com/*',
-  '*://*.netflix.com/*',
-  '*://*.twitch.tv/*'
+  '*://*.youtube.*',
+  '*://*.netflix.*',
+  '*://*.twitch.*',
+  '*://*.primevideo.*'
 ];
 
 // Study mode state

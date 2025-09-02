@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FocusFeed Settings</title>
+    <script src="css/tailwind.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-white dark:bg-gray-900 text-black dark:text-white">
+    <div class="max-w-2xl mx-auto p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-semibold">FocusFeed Settings</h1>
+        <label for="themeToggle" class="inline-flex items-center cursor-pointer">
+          <span class="relative">
+            <input id="themeToggle" type="checkbox" class="sr-only peer">
+            <div class="w-12 h-6 bg-gray-300 rounded-full peer dark:bg-gray-600 peer-checked:bg-indigo-600 transition-colors duration-200"></div>
+            <div class="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow peer-checked:translate-x-6 transform transition-transform duration-200"></div>
+          </span>
+        </label>
+      </div>
+
+      <!-- YouTube -->
+      <section class="bg-gray-100 dark:bg-gray-800 rounded-lg p-5 mb-5 shadow">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-3">
+            <input type="checkbox" id="youtube" class="w-5 h-5" />
+            <h2 class="text-lg font-semibold">YouTube</h2>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="toggleRecommendations"/> Hide Recommendations</label>
+          <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="toggleComments"/> Hide Comments</label>
+          <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="toggleShorts"/> Hide Shorts</label>
+          <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="toggleHomeFeed"/> Replace home with Subscriptions</label>
+          <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="grayThumbnails"/> Grayscale thumbnails</label>
+          <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="hideThumbnails"/> Hide thumbnails</label>
+        </div>
+      </section>
+
+      <!-- Instagram -->
+      <section class="bg-gray-100 dark:bg-gray-800 rounded-lg p-5 mb-5 shadow">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-3">
+            <input type="checkbox" id="instagram" class="w-5 h-5" />
+            <h2 class="text-lg font-semibold">Instagram</h2>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="toggleExploreFeed"/> Disable Explore</label>
+          <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="toggleReelsFeed"/> Disable Reels</label>
+          <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="toggleForYouPage"/> Disable "For You"</label>
+          <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="toggleSearchButton"/> Hide Search button</label>
+        </div>
+      </section>
+
+      <!-- Study Mode -->
+      <section class="bg-gray-100 dark:bg-gray-800 rounded-lg p-5 mb-5 shadow">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-3">
+            <input type="checkbox" id="studyMode" class="w-5 h-5" />
+            <h2 class="text-lg font-semibold">Study Mode</h2>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+          <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="blockSocial"/> Block Social Media</label>
+          <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="blockVideo"/> Block Video Sites</label>
+        </div>
+
+        <div class="mb-4">
+          <label class="flex items-center gap-2 text-sm">
+            <input type="checkbox" id="requireTriggerTab"/>
+            Block only when a trigger tab is open
+          </label>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">When enabled, blocking activates only while any open tab matches a trigger.</p>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-sm mb-2">Triggers (comma-separated domains)</label>
+          <input type="text" id="studyTriggers" class="w-full p-2 border rounded text-sm bg-white dark:bg-gray-900" placeholder="e.g., iu.org, mycampus.iu.org"/>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Enter domains only; subdomains match automatically.</p>
+        </div>
+
+        <div class="mb-2">
+          <label class="block text-sm font-medium mb-2">Custom blocked sites (domains)
+            <span class="block text-xs font-normal text-gray-500 dark:text-gray-400">Examples: reddit.com, news.ycombinator.com</span>
+          </label>
+          <div class="flex gap-2 mb-3">
+            <input id="customSiteInput" type="text" class="flex-1 p-2 border rounded text-sm bg-white dark:bg-gray-900" placeholder="example.com" />
+            <button id="addCustomSite" class="px-3 py-2 rounded bg-indigo-600 text-white text-sm hover:bg-indigo-500">Add</button>
+          </div>
+          <ul id="customSitesList" class="space-y-2"></ul>
+        </div>
+      </section>
+
+      <footer class="text-xs text-gray-500 dark:text-gray-400 mt-8">
+        <p>Changes are saved automatically.</p>
+      </footer>
+    </div>
+
+    <script type="module" src="utils.js"></script>
+    <script type="module" src="options.js"></script>
+  </body>
+  </html>
