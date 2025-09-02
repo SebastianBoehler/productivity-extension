@@ -1,3 +1,5 @@
+import { SOCIAL_MEDIA_DOMAINS, VIDEO_DOMAINS } from './sites.js';
+
 // Debug helpers
 const DEBUG = true; // Toggle to reduce logs if needed
 const debugLog = (...args) => { if (DEBUG) console.log('[FocusFeed]', ...args); };
@@ -48,7 +50,7 @@ function applyRulesBasedOnSettings() {
       });
     }
 
-    // Instagram Explore Feed Redirect
+    // Instagram Explore Feed Redirect (any TLD)
     if (settings.toggleExploreFeed && settings.instagram) {
       rulesToAdd.push({
         "id": 2,
@@ -58,13 +60,13 @@ function applyRulesBasedOnSettings() {
           "redirect": { "url": "https://www.instagram.com/" }
         },
         "condition": {
-          "regexFilter": "^(https?://)?(www\\.)?instagram\\.com/explore(/)?$",
+          "regexFilter": "^(https?://)?(www\\.)?instagram\\.[a-zA-Z0-9.-]{2,}/explore(/)?$",
           "resourceTypes": ["main_frame"]
         }
       });
     }
 
-    // Instagram Reels Feed Redirect
+    // Instagram Reels Feed Redirect (any TLD)
     if (settings.toggleReelsFeed && settings.instagram) {
       rulesToAdd.push({
         "id": 3,
@@ -74,7 +76,7 @@ function applyRulesBasedOnSettings() {
           "redirect": { "url": "https://www.instagram.com/" }
         },
         "condition": {
-          "regexFilter": "^(https?://)?(www\\.)?instagram\\.com/reels(/)?.*$",
+          "regexFilter": "^(https?://)?(www\\.)?instagram\\.[a-zA-Z0-9.-]{2,}/reels(/)?.*$",
           "resourceTypes": ["main_frame"]
         }
       });
@@ -91,7 +93,7 @@ function applyRulesBasedOnSettings() {
           "redirect": { "url": "https://www.instagram.com/?variant=following" }
         },
         "condition": {
-          "regexFilter": "^(https?://)?(www\\.)?instagram\\.com(/|/\\?variant=home)?$",
+          "regexFilter": "^(https?://)?(www\\.)?instagram\\.[a-zA-Z0-9.-]{2,}(/|/\\?variant=home)?$",
           "resourceTypes": ["main_frame"]
         }
       });
@@ -113,32 +115,29 @@ function applyRulesBasedOnSettings() {
 
 // Study mode constants
 const STUDY_MODE_RULE_START = 100;
-const SOCIAL_MEDIA_SITES = [
-  '*://*.facebook.com/*',
-  '*://*.twitter.com/*',
-  '*://*.x.com/*',
-  '*://*.instagram.com/*',
-  '*://*.tiktok.com/*'
-];
-const VIDEO_SITES = [
-  '*://www.youtube.com/*',
-  '*://youtube.com/*',
-  '*://m.youtube.com/*',
-  '*://*.netflix.com/*',
-  '*://*.twitch.tv/*'
-];
 
 // Helper: build rules based on selected categories and custom sites
 function domainToMainFrameRegex(domain) {
   const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return '^https?://(?:[^/]*\\.)?' + escapeRe(domain) + '(?::\\d+)?(?:/|$)';
+  // Support generic brand patterns like "facebook.*" or just "facebook"
+  const d = (domain || '').trim().toLowerCase();
+  if (!d) return '';
+  const isAnyTLD = d.endsWith('.*') || !d.includes('.');
+  if (isAnyTLD) {
+    const base = d.endsWith('.*') ? d.slice(0, -2) : d;
+    const baseEsc = escapeRe(base);
+    // Match any subdomain of base + any TLD (e.g., facebook.com, facebook.co.uk)
+    return `^https?://(?:[^/]*\\.)?${baseEsc}\\.[a-z0-9.-]{2,}(?::\\d+)?(?:/|$)`;
+  }
+  // Explicit domain with TLD
+  return '^https?://(?:[^/]*\\.)?' + escapeRe(d) + '(?::\\d+)?(?:/|$)';
 }
 
 function buildStudyModeRules(studyMode) {
   const rules = [];
   let ruleId = STUDY_MODE_RULE_START;
   if (studyMode.blockSocial) {
-    SOCIAL_MEDIA_SITES.forEach((site) => {
+    SOCIAL_MEDIA_DOMAINS.forEach((site) => {
       const domain = extractDomainFromTrigger(site);
       if (!domain) return;
       const regex = domainToMainFrameRegex(domain);
@@ -146,7 +145,7 @@ function buildStudyModeRules(studyMode) {
     });
   }
   if (studyMode.blockVideo) {
-    VIDEO_SITES.forEach((site) => {
+    VIDEO_DOMAINS.forEach((site) => {
       const domain = extractDomainFromTrigger(site);
       if (!domain) return;
       const regex = domainToMainFrameRegex(domain);
@@ -198,12 +197,19 @@ function triggerMatchesUrl(trigger, url) {
   try {
     const u = new URL(url);
     const host = (u.hostname || '').toLowerCase();
-    const match = host === domain || host.endsWith('.' + domain);
+    const isAnyTLD = domain.endsWith('.*') || !domain.includes('.');
+    let match = false;
+    if (isAnyTLD) {
+      const base = domain.endsWith('.*') ? domain.slice(0, -2) : domain;
+      const re = new RegExp(`(^|\\.)${base}\\.[a-z0-9.-]{2,}$`);
+      match = re.test(host);
+    } else {
+      match = host === domain || host.endsWith('.' + domain);
+    }
     debugLog('triggerMatchesUrl(domain-mode)', { trigger, domain, url, host, result: match });
     return match;
   } catch (e) {
-    // Fallback: pure substring on URL as last resort
-    const res = url.toLowerCase().includes(domain);
+    const res = url.toLowerCase().includes(domain.replace(/\\\.\*$/, ''));
     debugLog('triggerMatchesUrl(url-substring-fallback)', { trigger, domain, url, result: res });
     return res;
   }

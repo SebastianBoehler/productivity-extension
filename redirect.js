@@ -6,11 +6,11 @@ function checkForHomeURL() {
 
     console.log('toggleHomeFeedState', toggleHomeFeedState, settings);
 
-    // Define regular expressions for YouTube and Instagram URLs
-    const youtubeHomeRegex = /^(https?:\/\/)?(www\.)?youtube\.com\/?$/;
-    const instagramExploreRegex = /^(https?:\/\/)?(www\.)?instagram\.com\/explore\/?$/;
-    const instagramReelsRegex = /^(https?:\/\/)?(www\.)?instagram\.com\/reels\/?.*$/;  // Matches all URLs starting with /reels/
-    const instagramForYouRegex = /^(https?:\/\/)?(www\.)?instagram\.com(\/|\/?variant=home)?$/;  // Updated Instagram "For You" regex
+    // Define regular expressions for YouTube and Instagram URLs (any TLD)
+    const youtubeHomeRegex = /^(https?:\/\/)?(www\.)?youtube\.[a-zA-Z0-9.-]{2,}\/?$/;
+    const instagramExploreRegex = /^(https?:\/\/)?(www\.)?instagram\.[a-zA-Z0-9.-]{2,}\/explore\/?$/;
+    const instagramReelsRegex = /^(https?:\/\/)?(www\.)?instagram\.[a-zA-Z0-9.-]{2,}\/reels\/?.*$/;  // Matches all URLs starting with /reels/
+    const instagramForYouRegex = /^(https?:\/\/)?(www\.)?instagram\.[a-zA-Z0-9.-]{2,}(\/|\/?variant=home)?$/;  // Updated Instagram "For You" regex
 
     // YouTube Home Feed Redirect
     if (toggleHomeFeedState && settings.youtube) {

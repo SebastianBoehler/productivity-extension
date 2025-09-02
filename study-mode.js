@@ -1,20 +1,5 @@
-// List of social media sites to block
-const SOCIAL_MEDIA_SITES = [
-  '*://*.facebook.*',
-  '*://*.twitter.*',
-  '*://*.x.*',
-  '*://*.instagram.*',
-  '*://*.tiktok.*',
-  '*://*.linkedin.*'
-];
-
-// List of video sites to block
-const VIDEO_SITES = [
-  '*://*.youtube.*',
-  '*://*.netflix.*',
-  '*://*.twitch.*',
-  '*://*.primevideo.*'
-];
+// Site lists are centralized in sites.js and used by the background
+// service worker to build blocking rules. No lists are maintained here.
 
 // Study mode state
 let studyMode = {
